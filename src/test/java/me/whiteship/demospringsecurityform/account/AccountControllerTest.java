@@ -9,7 +9,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+//import static org.springframework.test.web.servlet.request.SecurityMockMvcRequestPostProccessors 이거 어디감?
 
 /**
  *
@@ -32,6 +32,11 @@ public class AccountControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
 
+    }
+
+    @Test
+    public void index_user() throws Exception {
+        //mockMvc.perform(get("/").with(user))
     }
 }
 
