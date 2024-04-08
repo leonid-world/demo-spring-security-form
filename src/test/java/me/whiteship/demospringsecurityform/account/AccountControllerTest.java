@@ -4,12 +4,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 //import static org.springframework.test.web.servlet.request.SecurityMockMvcRequestPostProccessors 이거 어디감?
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.anonymous;
 
 /**
  *
@@ -27,6 +31,7 @@ public class AccountControllerTest {
     MockMvc mockMvc;
 
     @Test
+    @WithAnonymousUser
     public void index_annonymout() throws Exception {
         mockMvc.perform(get("/"))
                 .andDo(print())
@@ -35,8 +40,28 @@ public class AccountControllerTest {
     }
 
     @Test
+    @WithUser
     public void index_user() throws Exception {
-        //mockMvc.perform(get("/").with(user))
+        mockMvc.perform(get("/"))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithUser
+    public void admin_user() throws Exception {
+        mockMvc.perform(get("/admin"))
+                .andDo(print())
+                .andExpect(status().isForbidden());
+
+    }
+
+    @Test
+    @WithMockUser(username = "leonid", roles = "ADMIN")
+    public void admin_admin() throws Exception {
+        mockMvc.perform(get("/admin"))
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
 
